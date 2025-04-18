@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "746101261747",
+    "project_id": "kullanicifirebase",
+    "storage_bucket": "kullanicifirebase.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:746101261747:android:02d1c1be4cd99e60a6f7c6",
+        "android_client_info": {
+          "package_name": "tr.com.necatiefeaslan.kullanicifirebase"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAh2J8f5RHYk7YnzxFO85Y8fKjKAICWYKY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
