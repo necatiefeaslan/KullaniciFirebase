@@ -22,13 +22,9 @@ class KayitActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         auth = Firebase.auth
-        val currentUser = auth.currentUser
-        if (currentUser != null) {
-            startActivity(Intent(this, DetayActivity::class.java))
-        }
+
 
         binding.btnCompleteRegister.setOnClickListener {
-
             val eposta = binding.etRegisterEmail.text.toString()
             val sifre = binding.etRegisterPassword.text.toString()
             val ad = binding.etName.text.toString()
@@ -38,22 +34,38 @@ class KayitActivity : AppCompatActivity() {
             auth.createUserWithEmailAndPassword(eposta, sifre)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
-                        Toast.makeText(this, "Kayıt Başarılı", Toast.LENGTH_LONG).show()
-                        startActivity(Intent(this, MainActivity::class.java))
+                        val userId = auth.currentUser?.uid
+                        val userMap = hashMapOf(
+                            "email" to eposta,
+                            "ad" to ad,
+                            "soyad" to soyad,
+                            "ogrenciNo" to ogrenciNo
+                        )
 
+                        if (userId != null) {
+                            db.collection("users").document(userId).set(userMap)
+                                .addOnSuccessListener {
+                                    Toast.makeText(this, "Kayıt Başarılı", Toast.LENGTH_LONG).show()
+                                    startActivity(Intent(this, MainActivity::class.java))
+                                    finish()
+                                }
+                                .addOnFailureListener {
+                                    Toast.makeText(
+                                        this,
+                                        "Firestore kaydı başarısız.",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                        }
                     } else {
-
                         Toast.makeText(
                             baseContext,
-                            "Authentication failed.",
+                            "Authentication failed." + task.exception,
                             Toast.LENGTH_SHORT,
                         ).show()
-
                     }
                 }
         }
-
-
     }
 }
 

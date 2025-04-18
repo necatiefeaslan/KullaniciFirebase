@@ -17,35 +17,50 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        auth = FirebaseAuth.getInstance() // FirebaseAuth nesnesini başlatıyoruz
+
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            startActivity(Intent(this, DetayActivity::class.java))
+            finish() // MainActivity'yi sonlandırıyoruz
+        }
+
+        // Giriş butonuna tıklama işlemi
         binding.btnLogin.setOnClickListener {
             val eposta = binding.etEmail.text.toString()
             val sifre = binding.etPassword.text.toString()
 
-            if(eposta.isEmpty() || sifre.isEmpty()){
+            // Alanları kontrol etme
+            if (eposta.isEmpty() || sifre.isEmpty()) {
                 Toast.makeText(this, "Boş alanları doldurunuz", Toast.LENGTH_LONG).show()
-
+                return@setOnClickListener
             }
 
+            // Firebase Auth ile giriş işlemi
             auth.signInWithEmailAndPassword(eposta, sifre)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
-                       Toast.makeText(this, "Giriş Başarılı", Toast.LENGTH_LONG).show()
+                        // Giriş başarılıysa DetayActivity'ye geçiş yapıyoruz
+                        Toast.makeText(this, "Giriş Başarılı", Toast.LENGTH_LONG).show()
                         val intent = Intent(this, DetayActivity::class.java)
                         startActivity(intent)
-
+                        finish() // MainActivity'yi sonlandırıyoruz
                     } else {
+                        // Giriş başarısızsa hata mesajı gösteriyoruz
                         Toast.makeText(this, "Giriş Başarısız", Toast.LENGTH_LONG).show()
                         Toast.makeText(
                             baseContext,
-                            "Authentication failed."+task.exception,
+                            "Authentication failed: ${task.exception}",
                             Toast.LENGTH_SHORT,
                         ).show()
                     }
                 }
         }
+
+        // Kayıt butonuna tıklama işlemi
         binding.btnRegister.setOnClickListener {
             startActivity(Intent(this, KayitActivity::class.java))
         }
-
     }
 }
+
